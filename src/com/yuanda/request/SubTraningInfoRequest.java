@@ -1,7 +1,6 @@
 package com.yuanda.request;
 
 import java.io.IOException;
-import java.util.List;
 
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
@@ -12,9 +11,8 @@ import org.apache.http.util.EntityUtils;
 
 import com.yuanda.Constant;
 import com.yuanda.bean.CarsInfo;
-import com.yuanda.bean.OrderInfo;
 import com.yuanda.port.HttpClientRequest;
-import com.yuanda.utils.OrderUtils;
+import com.yuanda.utils.Style;
 
 public class SubTraningInfoRequest extends HttpClientRequest{
 
@@ -36,7 +34,7 @@ public class SubTraningInfoRequest extends HttpClientRequest{
 				//"&yyrqbegin=20141126"+
 				"&xnsd="+carsInfo.getXNSD()+
 				//"&xnsd=15"+
-				"&trainType=1"+
+				"&trainType="+ (getType().equals(Style.SUBJECT_TOW)?1:6) +                    //科目二 &trainType=1      科目三    &trainType=6
 				"&type=km2Car2");
 		System.out.println("提交约车请求--->httpget:"+httpGet.getURI());
 		try

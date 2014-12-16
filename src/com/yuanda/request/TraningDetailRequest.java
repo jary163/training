@@ -17,6 +17,7 @@ import com.yuanda.bean.CarsInfo;
 import com.yuanda.bean.OrderInfo;
 import com.yuanda.port.HttpClientRequest;
 import com.yuanda.utils.OrderUtils;
+import com.yuanda.utils.Style;
 
 public class TraningDetailRequest extends HttpClientRequest {
 
@@ -33,7 +34,7 @@ public class TraningDetailRequest extends HttpClientRequest {
 		HttpGet httpGet = new HttpGet(Constant.YUANDA_ASSIGN_PERSON_DETAIL+
 				"?filters%5Byyrq%5D="+orderInfo.getAppointDate()+
 				"&filters%5Bxnsd%5D="+orderInfo.getAppingPart()+
-				"&filters%5Bxllxid%5D=1"+
+				"&filters%5Bxllxid%5D="+ (getType().equals(Style.SUBJECT_TOW)?1:6) +   //科目二   &filters%5Bxllxid%5D=1 科目三   &filters%5Bxllxid%5D=6
 				"&filters%5Btype%5D=km2Car"+
 				"&pageno=1"+"&pagesize=10");
 		System.out.println("获取"+orderInfo.getAppointDate()+"信息--->httpget:"+httpGet.getURI());

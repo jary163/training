@@ -5,7 +5,6 @@ import java.util.Date;
 import java.util.List;
 
 import org.apache.http.client.HttpClient;
-import org.apache.http.cookie.Cookie;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.params.CoreConnectionPNames;
 
@@ -27,24 +26,17 @@ public class Training extends BaseRunnable{
 	private boolean isGetCarsInfo = false;//是否获取到了当天约车详细信息
 	private  String userName;
 	private String password;
-	private  boolean morning = true;
-	private  boolean afternoon = true;
-	private  boolean evening = true;
 	//private  boolean isTraningSuccess = false; //约车是否成功，是否需要等待一段时间再约车
 	private int state;//预约状态
 	private static final long WAITTING_TIME = 3000;//约车失败，10s之后再请求一次
 	private static final int REQUEST_MAX = 5;//每个请求最大的请求次数
 	private  String traningTime="20141213";//可以约车的时间段一
-	private  String traningOtherTime="20141214";//可以约车的时间段二
 	private  HttpClient httpClient;
 	private Style trainingStyle;//科目类型
 	private int timer;//约车时间段
 	
-	public Training(){};
-	public Training(String userName,String password){
-		this.userName = userName;
-		this.password = password;
-	}
+	public Training(){}
+
 
 	public Training(String userName, String password, Style subjectTow,String traningTime,int timer) {
 		this.userName = userName;
@@ -150,6 +142,7 @@ public class Training extends BaseRunnable{
 		HttpClientRequest traningInfo = new TraningDetailRequest();
 		traningInfo.setHttpClient(httpClient);
 		traningInfo.setDate(orderInfo);
+        traningInfo.setType(trainingStyle);
 		traningInfo.doGet(); 
 		isGetCarsInfo = (Boolean) traningInfo.getDate();
 	} 
@@ -164,18 +157,19 @@ public class Training extends BaseRunnable{
 		}
 		if(null!=carsInfos&&carsInfos.size()>=1){//读取完了之后有可能还为空
 			HttpClientRequest subTraningInfo = new SubTraningInfoRequest();
-			List<Cookie> cookies = ((DefaultHttpClient)httpClient).getCookieStore().getCookies();
+/*			List<Cookie> cookies = ((DefaultHttpClient)httpClient).getCookieStore().getCookies();
 			for (int i = 0; i < cookies.size(); i++) {
 			System.out.println("cookiename=="+cookies.get(i).getName());
 			System.out.println("cookieValue=="+cookies.get(i).getValue());
 			System.out.println("Domain=="+cookies.get(i).getDomain());
 			System.out.println("Path=="+cookies.get(i).getPath());
 			System.out.println("Version=="+cookies.get(i).getVersion());
-			}
+			}*/
 			for (int i = 0; i <carsInfos.size()&&SubTraningInfoRequest.REQUEST_CONTINUE==state; i++) {//对已经获取到的约车信息进行遍历，看看能不能约上
 				System.out.println("提交约车信息:"+carsInfos.get(i));
 				subTraningInfo.setHttpClient(httpClient);
 				subTraningInfo.setDate(carsInfos.get(i%carsInfos.size()));
+                subTraningInfo.setType(trainingStyle);
 				subTraningInfo.doGet();
 				state = (Integer) subTraningInfo.getDate();
 				//isTraningSuccess = (boolean) subTraningInfo.getDate();

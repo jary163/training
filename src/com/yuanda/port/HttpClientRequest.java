@@ -2,11 +2,12 @@ package com.yuanda.port;
 
 import org.apache.http.client.HttpClient;
 
-import com.yuanda.bean.OrderInfo;
+import com.yuanda.utils.Style;
 
 public abstract class HttpClientRequest {
 	protected HttpClient httpClient;
-	
+	private Style type;//约车类型
+
 	/**
 	 * 发送get请求
 	 */
@@ -28,7 +29,7 @@ public abstract class HttpClientRequest {
 	 */
 	public void setHttpClient(HttpClient httpClient){
 		this.httpClient = httpClient;
-	};
+	}
 	
 	/**
 	 * 获取单个请求中需要的数据
@@ -45,4 +46,12 @@ public abstract class HttpClientRequest {
 	public void setDate(Object object){
 		
 	}
+
+    public Style getType() {
+        return type;
+    }
+
+    public void setType(Style type) {
+        this.type = type;
+    }
 }
