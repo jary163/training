@@ -78,7 +78,7 @@ public class DirectTraining extends BaseRunnable{
 			HttpClientRequest loginRequest = new LoginRequest(userName, password);
 			loginRequest.setHttpClient(httpClient);
 			loginRequest.doPost();
-			isgetCookie = (boolean) loginRequest.getDate();
+			isgetCookie = (Boolean) loginRequest.getDate();
 			count++;
 		}
 	}

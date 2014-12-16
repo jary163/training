@@ -46,7 +46,7 @@ public class Training extends BaseRunnable{
 		this.password = password;
 	}
 
-	public Training(String username2, String password2, Style subjectTow,String traningTime,int timer) {
+	public Training(String userName, String password, Style subjectTow,String traningTime,int timer) {
 		this.userName = userName;
 		this.password = password;
 		this.trainingStyle = subjectTow;
@@ -95,7 +95,7 @@ public class Training extends BaseRunnable{
 			HttpClientRequest loginRequest = new LoginRequest(userName, password);
 			loginRequest.setHttpClient(httpClient);
 			loginRequest.doPost();
-			isgetCookie = (boolean) loginRequest.getDate();
+			isgetCookie = (Boolean) loginRequest.getDate();
 			count++;
 		}
 	}
@@ -151,7 +151,7 @@ public class Training extends BaseRunnable{
 		traningInfo.setHttpClient(httpClient);
 		traningInfo.setDate(orderInfo);
 		traningInfo.doGet(); 
-		isGetCarsInfo = (boolean) traningInfo.getDate();
+		isGetCarsInfo = (Boolean) traningInfo.getDate();
 	} 
 	
 	
@@ -177,7 +177,7 @@ public class Training extends BaseRunnable{
 				subTraningInfo.setHttpClient(httpClient);
 				subTraningInfo.setDate(carsInfos.get(i%carsInfos.size()));
 				subTraningInfo.doGet();
-				state = (int) subTraningInfo.getDate();
+				state = (Integer) subTraningInfo.getDate();
 				//isTraningSuccess = (boolean) subTraningInfo.getDate();
 			}
 		}
