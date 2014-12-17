@@ -12,7 +12,7 @@ public class YuanDa {
 		yuanda.initDate();
 		//yuanda.startTraning("430703199310182750","931018");
 		//yuanda.startTraning("152527198207050012","820705",Style.SUBJECT_TOW,"20141213",0x11);
-        yuanda.startTraning("430703199310182750","931018",Style.SUBJECT_THREE,"20141221",0x11);
+		yuanda.startTraning("430703199310182750","931018",Style.SUBJECT_THREE,"20141221",0x11);
 		//yuanda.startTraning("430821198605220025","860522");
 		//yuanda.startTraning("220724198802224230","880222");
 	}
@@ -28,6 +28,7 @@ public class YuanDa {
 			Constant.fileSavePath = "C:\\yuanda";
 		}
 	}
+
 	/**
 	 * 开始约车
 	 */
