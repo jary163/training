@@ -29,19 +29,19 @@ public class Training extends BaseRunnable{
 	//private  boolean isTraningSuccess = false; //约车是否成功，是否需要等待一段时间再约车
 	private int state;//预约状态
 	private static final long WAITTING_TIME = 3000;//约车失败，10s之后再请求一次
-	private static final int REQUEST_MAX = 5;//每个请求最大的请求次数
+	private static final int REQUEST_MAX = 5;// 每个请求最大的请求次数
 	private  String traningTime="20141213";//可以约车的时间段一
 	private  HttpClient httpClient;
 	private Style trainingStyle;//科目类型
 	private int timer;//约车时间段
-	
+
 	public Training(){}
 
 
 	public Training(String userName, String password, Style subjectTow,String traningTime,int timer) {
 		this.userName = userName;
 		this.password = password;
-		this.trainingStyle = subjectTow;
+		trainingStyle = subjectTow;
 		this.traningTime = traningTime;
 		this.timer = timer;
 	}
@@ -50,39 +50,39 @@ public class Training extends BaseRunnable{
 		while(SubTraningInfoRequest.REQUEST_SUCCESS!=state){
 			state = SubTraningInfoRequest.REQUEST_CONTINUE;
 			httpClient = new DefaultHttpClient();
-			httpClient.getParams().setParameter(CoreConnectionPNames.CONNECTION_TIMEOUT, 5000); 
-			
+			httpClient.getParams().setParameter(CoreConnectionPNames.CONNECTION_TIMEOUT, 5000);
+
 			sendLoginRequest(userName, password);
-			
+
 			if(!OrderUtils.traningFileIsExists(traningTime)){
 				System.out.println("文件不存在，获取一次所有约车信息："+Constant.fileSavePath+File.separator+traningTime);
 				sendAllTraningRequest();
-				
+
 				sendTraningDetailRequest();
 			}else{
 				System.out.println("文件存在，直接进行约车"+Constant.fileSavePath+File.separator+traningTime);
 			}
-			
+
 			submitTraningInfo();
 
 			try {
-				Thread.sleep(WAITTING_TIME);
+				Thread.sleep(Training.WAITTING_TIME);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
 		}
-		
-		
+
+
 	}
 
-	
+
 	/**
 	 * 登录获取cookie信息
 	 */
 	private  void sendLoginRequest(String userName, String password) {
 		boolean isgetCookie = false;
 		int count = 0;
-		while(!isgetCookie&&count<REQUEST_MAX){
+		while(!isgetCookie&&(count<Training.REQUEST_MAX)){
 			System.out.println("获取登陆cookie:"+new Date(System.currentTimeMillis()).toLocaleString());
 			HttpClientRequest loginRequest = new LoginRequest(userName, password);
 			loginRequest.setHttpClient(httpClient);
@@ -99,13 +99,13 @@ public class Training extends BaseRunnable{
 		boolean isGetAllTraningInfo = false;
 		int count = 0 ;
 		//while(!isGetAllTraningInfo||count<REQUEST_MAX){
-		while(!isGetAllTraningInfo&&count<REQUEST_MAX){
+		while(!isGetAllTraningInfo&&(count<Training.REQUEST_MAX)){
 			System.out.println("获取所有能约车信息:"+count);
 			HttpClientRequest traningInfo = new GetTraningInfoRequest();
 			traningInfo.setHttpClient(httpClient);
 			traningInfo.doGet();
 			orderInfos = (List<OrderInfo>) traningInfo.getDate();
-			isGetAllTraningInfo = (null!=orderInfos&&orderInfos.size()>=1?true:false);
+			isGetAllTraningInfo = ((null!=orderInfos)&&(orderInfos.size()>=1)?true:false);
 			count++;
 		}
 	}
@@ -117,16 +117,17 @@ public class Training extends BaseRunnable{
 	 */
 	private  void sendTraningDetailRequest() {
 		System.out.println("选择性提交预约信息:"+orderInfos);
-		if(null!=orderInfos&&orderInfos.size()>1){
+		if((null!=orderInfos)&&(orderInfos.size()>1)){
 			OrderUtils.saveAllTraning(orderInfos);
 			//for (int i = 0; i < orderInfos.size()*REQUEST_MAX||(null==carsInfos||carsInfos.size()<1); i++) {
-			for (int i = 0;!isGetCarsInfo&&i<REQUEST_MAX; i++) {
+			// for (int i = 0;!isGetCarsInfo&&(i<Training.REQUEST_MAX); i++) {
+			for (int i = 0; !isGetCarsInfo && (i < (orderInfos.size() * 2)); i++) {
 				//System.out.println("size:"+orderInfos.size()+"   i:"+i);
 				OrderInfo orderInfo = orderInfos.get(i%orderInfos.size());
-				if(null!=orderInfo.getAppingPart()&&
+				if((null!=orderInfo.getAppingPart())&&
 						(orderInfo.getAppointDate().equals(traningTime))){//TODO 目前只能处理获取一天的详细约车信息
-						System.out.println("满足日期约车的条件："+orderInfo);
-						getTraningDetailInfo(orderInfo);
+					System.out.println("满足日期约车的条件："+orderInfo);
+					getTraningDetailInfo(orderInfo);
 				}
 				//System.out.println("crasInfos:"+carsInfos+"    size:"+(null==carsInfos?0:carsInfos.size()));
 			}
@@ -142,22 +143,22 @@ public class Training extends BaseRunnable{
 		HttpClientRequest traningInfo = new TraningDetailRequest();
 		traningInfo.setHttpClient(httpClient);
 		traningInfo.setDate(orderInfo);
-        traningInfo.setType(trainingStyle);
-		traningInfo.doGet(); 
+		traningInfo.setType(trainingStyle);
+		traningInfo.doGet();
 		isGetCarsInfo = (Boolean) traningInfo.getDate();
-	} 
-	
-	
+	}
+
+
 	/**
 	 * 对信息进行提交
 	 */
 	private  void submitTraningInfo() {
-		if(null==carsInfos&&OrderUtils.traningFileIsExists(traningTime)){//TODO 涉及到多线程，可以设置成一个公共变量进行读取
+		if((null==carsInfos)&&OrderUtils.traningFileIsExists(traningTime)){//TODO 涉及到多线程，可以设置成一个公共变量进行读取
 			carsInfos = OrderUtils.getCarsInfoFromLocal(traningTime,timer);
 		}
-		if(null!=carsInfos&&carsInfos.size()>=1){//读取完了之后有可能还为空
+		if((null!=carsInfos)&&(carsInfos.size()>=1)){//读取完了之后有可能还为空
 			HttpClientRequest subTraningInfo = new SubTraningInfoRequest();
-/*			List<Cookie> cookies = ((DefaultHttpClient)httpClient).getCookieStore().getCookies();
+			/*			List<Cookie> cookies = ((DefaultHttpClient)httpClient).getCookieStore().getCookies();
 			for (int i = 0; i < cookies.size(); i++) {
 			System.out.println("cookiename=="+cookies.get(i).getName());
 			System.out.println("cookieValue=="+cookies.get(i).getValue());
@@ -165,11 +166,11 @@ public class Training extends BaseRunnable{
 			System.out.println("Path=="+cookies.get(i).getPath());
 			System.out.println("Version=="+cookies.get(i).getVersion());
 			}*/
-			for (int i = 0; i <carsInfos.size()&&SubTraningInfoRequest.REQUEST_CONTINUE==state; i++) {//对已经获取到的约车信息进行遍历，看看能不能约上
+			for (int i = 0; (i <carsInfos.size())&&(SubTraningInfoRequest.REQUEST_CONTINUE==state); i++) {//对已经获取到的约车信息进行遍历，看看能不能约上
 				System.out.println("提交约车信息:"+carsInfos.get(i));
 				subTraningInfo.setHttpClient(httpClient);
 				subTraningInfo.setDate(carsInfos.get(i%carsInfos.size()));
-                subTraningInfo.setType(trainingStyle);
+				subTraningInfo.setType(trainingStyle);
 				subTraningInfo.doGet();
 				state = (Integer) subTraningInfo.getDate();
 				//isTraningSuccess = (boolean) subTraningInfo.getDate();
@@ -181,7 +182,7 @@ public class Training extends BaseRunnable{
 		}else{
 			System.out.println("预约失败");
 		}
-		
+
 	}
 
 }

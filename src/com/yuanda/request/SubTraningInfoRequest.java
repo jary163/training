@@ -38,40 +38,40 @@ public class SubTraningInfoRequest extends HttpClientRequest{
 				"&type=km2Car2");
 		System.out.println("提交约车请求--->httpget:"+httpGet.getURI());
 		try
-		{		
-			
+		{
+
 			// 客户端执行get请求 返回响应实体
 			HttpResponse response = httpClient.execute(httpGet);
-			
+
 			// 服务器响应状态行
 			System.out.println(response.getStatusLine());
-			
+
 			Header[] heads = response.getAllHeaders();
 			// 打印所有响应头
 			for(Header h:heads){
 				//System.out.println(h.getName()+":"+h.getValue());
 			}
-			
+
 			// 获取响应消息实体
 			HttpEntity entity = response.getEntity();
-			
+
 			//System.out.println("------------------------------------");
-			
-			
+
+
 			if(entity != null){
-								
+
 				//响应内容
 				String responseMessage = EntityUtils.toString(entity);
 				if(!responseMessage.contains("NullReferenceException")&&!responseMessage.contains("不正确的数据")&&!responseMessage.contains("JsonReaderException")){//TODO  没有处理（科目二训练次数已够或未约晚段）
 					System.out.println("提交确认信息响应内容:"+responseMessage);
-					state = REQUEST_CONTINUE;
+					SubTraningInfoRequest.state = SubTraningInfoRequest.REQUEST_CONTINUE;
 				}else{
-					state = REQUEST_FAILE;
+					SubTraningInfoRequest.state = SubTraningInfoRequest.REQUEST_FAILE;
 					//isTraningSuccess = true;//包含不正确的数据，说明此次回话无效，重新发送请求
 					System.out.println("请求错误，请重试");
 				}
-				if(responseMessage.contains("成功")){
-					state = REQUEST_SUCCESS;
+				if (responseMessage.contains("预约4个小时")) {// 成功提示，该科目训练每天最多能预约4个小时
+					SubTraningInfoRequest.state = SubTraningInfoRequest.REQUEST_SUCCESS;
 				}
 				//System.out.println("----------------------------------------");
 				// 响应内容长度
@@ -86,28 +86,28 @@ public class SubTraningInfoRequest extends HttpClientRequest{
 		}finally{
 			httpGet.abort();
 		}
-		
+
 	}
 
 	@Override
 	public void doPost() {
-		
+
 	}
 
 	@Override
 	public void setRequestHead() {
-		
+
 	}
 
 	@Override
 	public void setDate(Object object) {
 		if(object instanceof CarsInfo){
-			this.carsInfo = (CarsInfo) object;
+			carsInfo = (CarsInfo) object;
 		}
 	}
-	
+
 	@Override
 	public Object getDate() {
-		return state;
+		return SubTraningInfoRequest.state;
 	}
 }
