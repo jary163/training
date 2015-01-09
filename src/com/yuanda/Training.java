@@ -50,7 +50,10 @@ public class Training extends BaseRunnable{
 		while(SubTraningInfoRequest.REQUEST_SUCCESS!=state){
 			state = SubTraningInfoRequest.REQUEST_CONTINUE;
 			httpClient = new DefaultHttpClient();
-			httpClient.getParams().setParameter(CoreConnectionPNames.CONNECTION_TIMEOUT, 5000);
+			// 请求超时
+			httpClient.getParams().setParameter(CoreConnectionPNames.CONNECTION_TIMEOUT, 3000);
+			// 读取超时
+			httpClient.getParams().setParameter(CoreConnectionPNames.SO_TIMEOUT, 3000);
 
 			sendLoginRequest(userName, password);
 

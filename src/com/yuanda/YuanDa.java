@@ -11,12 +11,9 @@ public class YuanDa {
 		YuanDa yuanda = new YuanDa();
 		yuanda.initDate();
 		//yuanda.startTraning("430703199310182750","931018");
-		// yuanda.startTraning("152527198207050012", "820705",
-		// Style.SUBJECT_TOW,"20141220", 0x11);
-		// yuanda.startTraning("152527198207050012", "820705",
-		// Style.SUBJECT_TOW,"20141221", 0x11);
-		yuanda.startTraning("430703199310182750", "931018",
-				Style.SUBJECT_THREE, "20141221", 0x11);
+		// yuanda.startTraning("152527198207050012", "820705",Style.SUBJECT_TOW,"20141220", 0x11);
+		// yuanda.startTraning("152527198207050012", "820705",Style.SUBJECT_TOW,"20141221", 0x11);
+		yuanda.startTraning("130481198610111150", "861011",Style.SUBJECT_THREE, "20150110", 0x11);
 		//yuanda.startTraning("430821198605220025","860522");
 		//yuanda.startTraning("220724198802224230","880222");
 	}
